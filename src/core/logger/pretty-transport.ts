@@ -10,7 +10,7 @@ export default (opts: any) => {
       const message = log[messageKey];
       const context = log.context;
       const currentTime = log.time || Date.now();
-      
+
       let diff = 0;
       if (lastTime !== 0) {
         diff = currentTime - lastTime;
@@ -18,7 +18,20 @@ export default (opts: any) => {
       lastTime = currentTime;
 
       const diffStr = colorette.yellow(` +${diff}ms`);
-      
+
+      // Format HTTP request logs
+      if (log.req || log.method) {
+        const method = log.method || log.req?.method;
+        const url = log.url || log.req?.url;
+        const status = log.res?.statusCode || log.statusCode;
+        const responseTime = log.responseTime;
+
+        const statusColor = status >= 500 ? colorette.red : status >= 400 ? colorette.yellow : colorette.green;
+        const timeStr = responseTime ? colorette.gray(` ${responseTime}ms`) : '';
+
+        return `${colorette.cyan(method)} ${url} ${statusColor(status)}${timeStr}${diffStr}`;
+      }
+
       if (context && typeof context === 'string' && context.length > 0) {
         return `${colorette.gray('[' + context + ']')} ${message}${diffStr}`;
       }
@@ -26,4 +39,3 @@ export default (opts: any) => {
     },
   });
 };
-

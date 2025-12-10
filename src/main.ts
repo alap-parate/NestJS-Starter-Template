@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { Logger } from 'nestjs-pino';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
-import { Configuration } from '@/core/config/configuration';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -13,17 +12,17 @@ async function bootstrap() {
   const logger = app.get(Logger);
   app.useLogger(logger);
 
-  const configService = app.get<ConfigService<Configuration>>(ConfigService);
+  const configService = app.get(ConfigService);
 
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
       forbidNonWhitelisted: true,
       whitelist: true,
-    })
-  )
+    }),
+  );
 
-  const port = configService.get('app.port', { infer: true });
+  const port = configService.get('app.port');
   await app.listen(port as number);
 
   // logger.log(`Server is running on port ${port}`);

@@ -1,25 +1,22 @@
-import { ConfigService } from "@nestjs/config";
-import { Environment } from "@/shared/enums/environment.enum";
-import { Configuration } from "@/core/config/configuration";
+import { ConfigType } from '@nestjs/config';
+import { Environment } from '@/shared/enums/environment.enum';
+import appConfig from '@/core/config/app.config';
 
 export interface LoggerOptions {
-    isProd: boolean;
-    level: string;
-    pretty: boolean;
+  isProd: boolean;
+  level: string;
+  pretty: boolean;
 }
 
 export const getLoggerOptions = (
-    config: ConfigService<Configuration>,
-) : LoggerOptions => {
-    const env = config.get<Environment>('env');
+  app: ConfigType<typeof appConfig>,
+): LoggerOptions => {
+  const isProd = app.env === Environment.Production;
+  const level = isProd ? 'info' : 'trace';
 
-    const isProd = env === Environment.Production;
-
-    const level = isProd ? 'info' : 'trace';
-
-    return {
-        isProd,
-        level,
-        pretty: !isProd,
-    }
-}
+  return {
+    isProd,
+    level,
+    pretty: !isProd,
+  };
+};
