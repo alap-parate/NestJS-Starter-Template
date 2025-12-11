@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { Logger } from 'nestjs-pino';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
+import { setupSwagger } from '@/core/swagger/swagger.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -22,11 +23,13 @@ async function bootstrap() {
     }),
   );
 
+  setupSwagger(app, configService.get('swagger')!);
+
   const port = configService.get('app.port');
   await app.listen(port as number);
 
   // logger.log(`Server is running on port ${port}`);
-  logger.log(`App Started in ${configService.get('env')} mode`);
+  logger.log(`App Started in ${configService.get('app.env')} mode`);
   logger.log(`Server is running on ${port}`);
   logger.log(`Server Started Successfully`);
 }

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import appConfig from './app.config';
 import dbConfig from './db.config';
+import swaggerConfig from './swagger.config';
 
 @Module({
   imports: [
@@ -9,7 +10,8 @@ import dbConfig from './db.config';
       isGlobal: true,
       load: [
         appConfig, 
-        dbConfig
+        dbConfig,
+        swaggerConfig,
       ],
       envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`, '.env'],
     }),
