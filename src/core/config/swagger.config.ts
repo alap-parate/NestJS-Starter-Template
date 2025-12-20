@@ -17,3 +17,4 @@ export default registerAs('swagger', (): SwaggerConfig => ({
   path: process.env.SWAGGER_PATH || 'api/docs',
   siteTitle: process.env.SWAGGER_SITETITLE || 'NestJS API',
 }));
+
